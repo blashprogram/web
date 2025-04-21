@@ -36,13 +36,32 @@
   </div>
 
   <!-- Profile Page -->
-<div id="profile-page" style="display:none;">
-  <button id="back-to-feed">Back</button>
-  <h2>Your Profile</h2>
-  <p id="user-email"></p>
-  <h3>Your Posts</h3>
-  <div id="user-posts-container"></div>
+  <div id="profile-page" style="display:none;">
+    <button id="back-to-feed">Back</button>
+    <h2>Your Profile</h2>
+    <p id="user-email"></p>
+
+    <!-- Friend Requests Section -->
+    <div id="friend-requests-section">
+      <h3>Friend Requests</h3>
+      <div id="requests-container"></div>
+    </div>
+
+    <!-- Your Posts Section -->
+    <h3>Your Posts</h3>
+    <div id="user-posts-container"></div>
+
+    <!-- Friend List Section -->
+    <div id="friend-list-section">
+      <h3>Your Friends</h3>
+      <div id="friends-container"></div>
+    </div>
+    <!-- Profile Page - Friend Request Section -->
+<div id="friend-request-section">
+  <button id="send-friend-request-btn">Send Friend Request</button>
 </div>
+
+  </div>
 
   <script type="module" src="app.js"></script>
 </body>
