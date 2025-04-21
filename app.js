@@ -109,16 +109,6 @@ postSubmit.addEventListener('click', async () => {
 
 // Load Posts
 
-import {
-    getDoc,
-    updateDoc,
-    doc,
-    collection,
-    addDoc,
-    onSnapshot
-  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-  
-
 function loadPosts() {
     onSnapshot(collection(db, 'posts'), (snapshot) => {
       postsContainer.innerHTML = ''; // সব পুরাতন পোস্ট ক্লিয়ার
