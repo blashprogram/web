@@ -1,37 +1,37 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Facebook-like Social Media</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Signup/Login Page -->
+  <!-- Authentication Section -->
   <div id="auth-container">
-    <h1>Signup / Login</h1>
+    <h1>Login / Signup</h1>
     <form id="auth-form">
-      <input type="email" id="email" placeholder="Enter Email" required>
-      <input type="password" id="password" placeholder="Enter Password" required>
+      <input type="email" id="email" placeholder="Enter Email" required />
+      <input type="password" id="password" placeholder="Enter Password" required />
       <button type="submit" id="auth-button">Login</button>
-      <p id="auth-switch">Don't have an account? <a href="#" id="switch-to-signup">Signup</a></p>
+      <p id="auth-switch">
+        Don't have an account?
+        <a href="#" id="switch-to-signup">Signup</a>
+      </p>
     </form>
   </div>
 
-  <!-- Home Feed Page -->
-  <div id="home-feed" style="display:none;">
+  <!-- Home Feed Section -->
+  <div id="home-feed" style="display: none;">
     <button id="logout-btn">Logout</button>
-    <h2>Welcome to the Home Feed!</h2>
+    <h2>Welcome to the Home Feed</h2>
     <div id="post-create-form">
       <textarea id="post-text" placeholder="What's on your mind?"></textarea>
-      <input type="file" id="post-image">
+      <input type="file" id="post-image" />
       <button id="post-submit">Post</button>
     </div>
 
-    <div id="posts-container">
-
-    </div>
+    <div id="posts-container"></div>
   </div>
 
   <script type="module" src="app.js"></script>
