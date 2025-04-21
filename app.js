@@ -160,4 +160,109 @@ import {
       });
     });
   }
+
+
+  import {
+    getDoc,
+    updateDoc,
+    doc,
+    collection,
+    addDoc,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+  
+  function loadPosts() {
+    onSnapshot(collection(db, 'posts'), (snapshot) => {
+      postsContainer.innerHTML = '';
+  
+      snapshot.forEach(docSnap => {
+        const post = docSnap.data();
+        const postId = docSnap.id;
+  
+        const postElement = document.createElement('div');
+        postElement.classList.add('post');
+  
+        const currentUser = auth.currentUser;
+        const isLiked = post.likes && post.likes.includes(currentUser?.uid);
+  
+        postElement.innerHTML = `
+          <p>${post.text}</p>
+          ${post.imageURL ? `<img src="${post.imageURL}" width="300px" />` : ''}
+          <button data-id="${postId}" class="like-btn">
+            ❤️ ${post.likes ? post.likes.length : 0}
+          </button>
+  
+          <div class="comments" id="comments-${postId}"></div>
+  
+          <input type="text" placeholder="Write a comment..." id="comment-input-${postId}" />
+          <button data-id="${postId}" class="comment-btn">Comment</button>
+        `;
+  
+        postsContainer.appendChild(postElement);
+  
+        // Load Comments
+        const commentsContainer = document.getElementById(`comments-${postId}`);
+        const commentsRef = collection(db, "posts", postId, "comments");
+  
+        onSnapshot(commentsRef, (commentSnap) => {
+          commentsContainer.innerHTML = '';
+          commentSnap.forEach(commentDoc => {
+            const comment = commentDoc.data();
+            const p = document.createElement('p');
+            p.textContent = `💬 ${comment.text}`;
+            commentsContainer.appendChild(p);
+            commentSnap.forEach(commentDoc => {
+                const comment = commentDoc.data();
+                
+                const p = document.createElement('p');
+                const time = comment.timestamp?.toDate?.().toLocaleString() || '';
+                
+                p.textContent = `👤 ${comment.userName || 'User'} 🕒 ${time}\n💬 ${comment.text}`;
+                commentsContainer.appendChild(p);
+              });
+              
+          });
+        });
+      });
+  
+      // Like buttons
+      const likeButtons = document.querySelectorAll('.like-btn');
+      likeButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+          const postId = button.getAttribute('data-id');
+          const postRef = doc(db, 'posts', postId);
+          const postSnap = await getDoc(postRef);
+          const postData = postSnap.data();
+          const userId = auth.currentUser.uid;
+          let updatedLikes = postData.likes || [];
+          if (!updatedLikes.includes(userId)) {
+            updatedLikes.push(userId);
+          }
+          await updateDoc(postRef, {
+            likes: updatedLikes
+          });
+        });
+      });
+  
+      // Comment buttons
+      const commentButtons = document.querySelectorAll('.comment-btn');
+      commentButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+          const postId = button.getAttribute('data-id');
+          const input = document.getElementById(`comment-input-${postId}`);
+          const commentText = input.value;
+  
+          if (commentText.trim() !== '') {
+            const commentsRef = collection(db, "posts", postId, "comments");
+            await addDoc(commentsRef, {
+              text: commentText,
+              timestamp: new Date()
+            });
+            input.value = '';
+          }
+        });
+      });
+    });
+  }
+  
   
