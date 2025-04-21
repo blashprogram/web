@@ -121,17 +121,30 @@ function loadPosts() {
       postsContainer.appendChild(postDiv);
 
       // Like Button
-      postDiv.querySelector('.like-btn').addEventListener('click', async () => {
-        const postRef = doc(db, 'posts', postId);
-        const postSnap = await getDoc(postRef);
-        const data = postSnap.data();
-        const likes = data.likes || [];
+// ❤️ Like buttons
+const likeButtons = document.querySelectorAll('.like-btn');
+likeButtons.forEach(button => {
+  button.addEventListener('click', async () => {
+    const postId = button.getAttribute('data-id');
+    const postRef = doc(db, 'posts', postId);
+    const postSnap = await getDoc(postRef);
+    const postData = postSnap.data();
+    const userId = auth.currentUser.uid;
+    let updatedLikes = postData.likes || [];
 
-        if (!likes.includes(userId)) {
-          likes.push(userId);
-          await updateDoc(postRef, { likes });
-        }
-      });
+    if (updatedLikes.includes(userId)) {
+      // Already liked, so unlike it
+      updatedLikes = updatedLikes.filter(id => id !== userId);
+    } else {
+      // Not liked yet, so like it
+      updatedLikes.push(userId);
+    }
+
+    await updateDoc(postRef, {
+      likes: updatedLikes
+    });
+  });
+});
 
       // Comment Button
       postDiv.querySelector('.comment-btn').addEventListener('click', async () => {
