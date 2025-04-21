@@ -177,3 +177,50 @@ likeButtons.forEach(button => {
     });
   });
   }
+
+//profile
+const profilePage = document.getElementById("profile-page");
+const userEmailText = document.getElementById("user-email");
+const userPostsContainer = document.getElementById("user-posts-container");
+const viewProfileBtn = document.getElementById("view-profile");
+const backToFeedBtn = document.getElementById("back-to-feed");
+
+viewProfileBtn.addEventListener("click", () => {
+  const user = auth.currentUser;
+  if (user) {
+    homeFeed.style.display = "none";
+    profilePage.style.display = "block";
+    userEmailText.textContent = `Email: ${user.email}`;
+    loadUserPosts(user.uid);
+  }
+});
+
+backToFeedBtn.addEventListener("click", () => {
+  profilePage.style.display = "none";
+  homeFeed.style.display = "block";
+});
+
+function loadUserPosts(uid) {
+  const q = query(collection(db, "posts"), where("userId", "==", uid));
+  onSnapshot(q, (snapshot) => {
+    userPostsContainer.innerHTML = "";
+    snapshot.forEach((docSnap) => {
+      const post = docSnap.data();
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <p>${post.text}</p>
+        ${post.imageURL ? `<img src="${post.imageURL}" width="300" />` : ""}
+        <hr/>
+      `;
+      userPostsContainer.appendChild(div);
+    });
+  });
+}
+
+
+await addDoc(collection(db, 'posts'), {
+  text,
+  imageURL: fileURL || '',
+  timestamp: new Date(),
+  userId: auth.currentUser.uid
+});
