@@ -2,15 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebas
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
-import {
-    getDoc,
-    updateDoc,
-    doc,
-    collection,
-    addDoc,
-    onSnapshot
-  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-  
+
 // Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCFMv7ak5kXSdALMyaMYKgUNPxPPIoTaFw",
@@ -108,6 +100,17 @@ postSubmit.addEventListener('click', async () => {
 });
 
 // Load Posts
+
+import {
+    getDoc,
+    updateDoc,
+    doc,
+    collection,
+    addDoc,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+  
+
 function loadPosts() {
     onSnapshot(collection(db, 'posts'), (snapshot) => {
       postsContainer.innerHTML = ''; // সব পুরাতন পোস্ট ক্লিয়ার
