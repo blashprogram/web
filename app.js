@@ -100,18 +100,61 @@ postSubmit.addEventListener('click', async () => {
 });
 
 // Load Posts
-function loadPosts() {
-  onSnapshot(collection(db, 'posts'), (snapshot) => {
-    postsContainer.innerHTML = '';
-    snapshot.forEach(doc => {
-      const post = doc.data();
-      const postElement = document.createElement('div');
-      postElement.classList.add('post');
-      postElement.innerHTML = `
-        <p>${post.text}</p>
-        ${post.imageURL ? `<img src="${post.imageURL}" width="300px" />` : ''}
-      `;
-      postsContainer.appendChild(postElement);
+import {
+    getDoc,
+    updateDoc,
+    doc
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+  
+  function loadPosts() {
+    onSnapshot(collection(db, 'posts'), (snapshot) => {
+      postsContainer.innerHTML = ''; // Clear previous posts
+  
+      snapshot.forEach(docSnap => {
+        const post = docSnap.data();
+        const postId = docSnap.id;
+  
+        const postElement = document.createElement('div');
+        postElement.classList.add('post');
+  
+        const currentUser = auth.currentUser;
+  
+        const isLiked = post.likes && post.likes.includes(currentUser?.uid);
+  
+        postElement.innerHTML = `
+          <p>${post.text}</p>
+          ${post.imageURL ? `<img src="${post.imageURL}" width="300px" />` : ''}
+          <button data-id="${postId}" class="like-btn">
+            ❤️ ${post.likes ? post.likes.length : 0}
+          </button>
+        `;
+  
+        postsContainer.appendChild(postElement);
+      });
+  
+      // Like button functionality
+      const likeButtons = document.querySelectorAll('.like-btn');
+      likeButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+          const postId = button.getAttribute('data-id');
+          const postRef = doc(db, 'posts', postId);
+  
+          const postSnap = await getDoc(postRef);
+          const postData = postSnap.data();
+  
+          const userId = auth.currentUser.uid;
+  
+          let updatedLikes = postData.likes || [];
+  
+          if (!updatedLikes.includes(userId)) {
+            updatedLikes.push(userId);
+          }
+  
+          await updateDoc(postRef, {
+            likes: updatedLikes
+          });
+        });
+      });
     });
-  });
-}
+  }
+  
