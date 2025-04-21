@@ -1,72 +1,37 @@
+
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Social App</title>
-  <style>
-    body { font-family: sans-serif; max-width: 400px; margin: auto; padding-top: 40px; }
-    input, button { display: block; margin-bottom: 10px; width: 100%; padding: 10px; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facebook-like Social Media</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Signup/Login Page -->
+  <div id="auth-container">
+    <h1>Signup / Login</h1>
+    <form id="auth-form">
+      <input type="email" id="email" placeholder="Enter Email" required>
+      <input type="password" id="password" placeholder="Enter Password" required>
+      <button type="submit" id="auth-button">Login</button>
+      <p id="auth-switch">Don't have an account? <a href="#" id="switch-to-signup">Signup</a></p>
+    </form>
+  </div>
 
-  <h2>সাইন আপ</h2>
-  <input type="email" id="signup-email" placeholder="ইমেইল">
-  <input type="password" id="signup-password" placeholder="পাসওয়ার্ড">
-  <button onclick="signUp()">সাইন আপ</button>
+  <!-- Home Feed Page -->
+  <div id="home-feed" style="display:none;">
+    <button id="logout-btn">Logout</button>
+    <h2>Welcome to the Home Feed!</h2>
+    <div id="post-create-form">
+      <textarea id="post-text" placeholder="What's on your mind?"></textarea>
+      <input type="file" id="post-image">
+      <button id="post-submit">Post</button>
+    </div>
 
-  <h2>লগইন</h2>
-  <input type="email" id="login-email" placeholder="ইমেইল">
-  <input type="password" id="login-password" placeholder="পাসওয়ার্ড">
-  <button onclick="login()">লগইন</button>
+    <div id="posts-container"></div>
+  </div>
 
-  <h3 id="welcome"></h3>
-  <button onclick="logout()">লগআউট</button>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDfiByZUq_Hcabp8RDPQKo1t4z_h6KVI1M",
-      authDomain: "my-social-app-bc053.firebaseapp.com",
-      projectId: "my-social-app-bc053",
-      storageBucket: "my-social-app-bc053.firebasestorage.app",
-      messagingSenderId: "265093593262",
-      appId: "1:265093593262:web:e48df4aded0d382d7fd53f"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    window.signUp = function () {
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => alert("সাইন আপ সফল!"))
-        .catch(err => alert("সাইন আপ সমস্যা: " + err.message));
-    };
-
-    window.login = function () {
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => alert("লগইন সফল!"))
-        .catch(err => alert("লগইন সমস্যা: " + err.message));
-    };
-
-    window.logout = function () {
-      signOut(auth).then(() => {
-        document.getElementById("welcome").innerText = "";
-        alert("লগআউট হয়েছে");
-      });
-    };
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("welcome").innerText = `স্বাগতম, ${user.email}`;
-      }
-    });
-  </script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
