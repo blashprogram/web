@@ -161,3 +161,77 @@ import {
     });
   }
   
+
+  // Comment Button Click Event
+const commentButtons = document.querySelectorAll('.comment-btn');
+commentButtons.forEach(button => {
+  button.addEventListener('click', async () => {
+    const postId = button.getAttribute('data-id');
+    const input = document.getElementById(`comment-input-${postId}`);
+    const commentText = input.value;
+
+    if (commentText.trim() !== '') {
+      const commentsRef = collection(db, "posts", postId, "comments");
+      await addDoc(commentsRef, {
+        text: commentText,
+        timestamp: new Date(),
+        userName: auth.currentUser.displayName || "Anonymous"
+      });
+      input.value = ''; // Clear comment input
+    }
+  });
+});
+
+
+// Load Comments Real-time for each post
+function loadComments(postId) {
+    const commentsContainer = document.getElementById(`comments-${postId}`);
+    const commentsRef = collection(db, "posts", postId, "comments");
+  
+    onSnapshot(commentsRef, (commentSnap) => {
+      commentsContainer.innerHTML = ''; // Clear previous comments
+      commentSnap.forEach(commentDoc => {
+        const comment = commentDoc.data();
+        const time = comment.timestamp?.toDate?.().toLocaleString() || '';
+        
+        const p = document.createElement('p');
+        p.textContent = `👤 ${comment.userName || 'User'} 🕒 ${time} 💬 ${comment.text}`;
+        commentsContainer.appendChild(p);
+      });
+    });
+  }
+
+  
+  // Load Posts with Comments
+function loadPosts() {
+    onSnapshot(collection(db, 'posts'), (snapshot) => {
+      postsContainer.innerHTML = ''; // Clear all old posts
+  
+      snapshot.forEach(docSnap => {
+        const post = docSnap.data();
+        const postId = docSnap.id;
+  
+        const postElement = document.createElement('div');
+        postElement.classList.add('post');
+    
+        postElement.innerHTML = `
+          <p>${post.text}</p>
+          ${post.imageURL ? `<img src="${post.imageURL}" width="300px" />` : ''}
+          
+          <button data-id="${postId}" class="like-btn">
+            ❤️ ${post.likes ? post.likes.length : 0}
+          </button>
+  
+          <div class="comments" id="comments-${postId}"></div>
+  
+          <input type="text" placeholder="Write a comment..." id="comment-input-${postId}" />
+          <button data-id="${postId}" class="comment-btn">Comment</button>
+        `;
+        postsContainer.appendChild(postElement);
+    
+        // Load comments for each post
+        loadComments(postId);
+      });
+    });
+  }
+  
