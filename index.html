@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>My Social App</title>
+  <style>
+    body { font-family: sans-serif; max-width: 400px; margin: auto; padding-top: 40px; }
+    input, button { display: block; margin-bottom: 10px; width: 100%; padding: 10px; }
+  </style>
+</head>
+<body>
+
+  <h2>সাইন আপ</h2>
+  <input type="email" id="signup-email" placeholder="ইমেইল">
+  <input type="password" id="signup-password" placeholder="পাসওয়ার্ড">
+  <button onclick="signUp()">সাইন আপ</button>
+
+  <h2>লগইন</h2>
+  <input type="email" id="login-email" placeholder="ইমেইল">
+  <input type="password" id="login-password" placeholder="পাসওয়ার্ড">
+  <button onclick="login()">লগইন</button>
+
+  <h3 id="welcome"></h3>
+  <button onclick="logout()">লগআউট</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDfiByZUq_Hcabp8RDPQKo1t4z_h6KVI1M",
+      authDomain: "my-social-app-bc053.firebaseapp.com",
+      projectId: "my-social-app-bc053",
+      storageBucket: "my-social-app-bc053.firebasestorage.app",
+      messagingSenderId: "265093593262",
+      appId: "1:265093593262:web:e48df4aded0d382d7fd53f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.signUp = function () {
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => alert("সাইন আপ সফল!"))
+        .catch(err => alert("সাইন আপ সমস্যা: " + err.message));
+    };
+
+    window.login = function () {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => alert("লগইন সফল!"))
+        .catch(err => alert("লগইন সমস্যা: " + err.message));
+    };
+
+    window.logout = function () {
+      signOut(auth).then(() => {
+        document.getElementById("welcome").innerText = "";
+        alert("লগআউট হয়েছে");
+      });
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("welcome").innerText = `স্বাগতম, ${user.email}`;
+      }
+    });
+  </script>
+</body>
+</html>
